@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html">
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-edge">
+		<title>Task Manager</title>
+		<script src="WebContent/WEB-INF/js/jquery-1.11.1.js"></script>
+		<script src="WebContent/WEB-INF/js/angular.min.js"></script>
+		<script src="WebContent/WEB-INF/js/taskManagerScript.js"></script>
+		<script type="text/javascript">
+		var listObjects= localStorage.getItem('listObjects') == null?[]:JSON.parse(localStorage.getItem('listObjects'));
+		var listNames = localStorage.getItem('listNames') == null ?[] : JSON.parse(localStorage.getItem('listNames'));
+		</script>
+	</head>
+	<body ng-app="taskManagementApp" ng-controller="mainController"
+	id="taskManagementHtmlBody">
+	<div>
+		<button type="button" id="createList" ng-click="createNewList()">+</button>Create New List
+	</div>
+	<table id="listBody" data-ng-repeat="list in lists" style="border-style:solid;border-color:black">
+		<thead>
+			<tr>
+				<th id="listName" ng-if="list.listNameVal" ng-click="changeListName(list.name)">
+					List Name :: {{list.name}}
+				</th>
+				<th ng-if="!list.listNameVal">
+					<input type="text" id="listNameValue" placeholder="Enter List Name" 
+					name="{{list.index}}" value = "{{list.name}}" list-enter=""/>
+				</th>
+				<th>
+					<button type="button" ng-click="deleteList(list.index)">Delete List</button>
+				</th>
+			</tr>
+		</thead>
+		<tbody data-ng-repeat ="card in list.cards" repeat-directive>
+			<tr style="border-style:solid;border-color:black;">
+				<td ng-if="card.cardStatusVal" ng-click="changeCardStatus(list.name,card.index)">
+					Card Status :: {{card.status}}
+				</td>
+				<td ng-if="!card.cardStatusVal">
+					<input type="text" placeholder="Enter card status"
+					value="{{card.status}}" name="{{card.index}}" card-status="" id= "{{list.index}}">
+				</td>
+				<td ng-if="card.cardUserVal" ng-click = "changeCardUser(list.name,card.index)">
+					Card UserName :: {{card.userName}}
+				</td>
+				<td ng-if=!card.cardUserVal>
+					<input type="text" placeholder="Enter Card User"
+					value="{{card.userName}}" name="{{card.index}}" card-user="" id="{{list.index}}">
+				</td>
+				<td ng-if = "card.cardNameVal" ng-click="changeCardName(list.name,card.index)">
+					Card Name :: {{card.name}}
+				</td>
+				<td ng-if="!card.cardNameVal">
+					<input type="text" placeholder="Enter Card Name"
+					value="{{card.name}}" name="{{card.index}}" id="{{list.index}}" card-name="">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<button type="button" ng-click="deleteCard(card.index,list.name)">Delete Card
+					</button>
+				</td>
+				<td>
+					<label>Transfer card:</label>
+					<select id="moveListName"></select>
+					<button type="button" ng-click="moveCard(list.name,card.name,$event);">
+					Move Card</button>
+				</td>
+			</tr>
+		</tbody>
+		<tfoot ng-if = "list.listNameVal">
+			<tr>
+				<td>
+					<div>
+						<button type="button" id="createCard" ng-click="createNewCard(list.name)">
+						+</button>Add New Card
+					</div>
+				</td>
+			</tr>
+		</tfoot>
+	</table>	
+	</body>
+</html>
